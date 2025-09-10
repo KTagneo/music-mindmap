@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>검색 결과</title>
+    <style>
+        /* 간단한 스타일링: 앨범 커버를 나란히 표시 */
+        .track-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* 아이템 사이 간격 */
+        }
+        .track-item {
+            text-align: center;
+            width: 150px;
+        }
+        .track-item img {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px; /* 앨범 커버를 약간 둥글게 */
+        }
+        .track-item a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>"{{ query }}" 검색 결과</h1>
+    <a href="/">새로 검색하기</a>
+    <hr>
+
+    <div class="track-list">
+        {% for track in tracks %}
+            <div class="track-item">
+                <a href="/recommendations/{{ track.id }}">
+                    <img src="{{ track.album.images[0].url }}" alt="{{ track.name }}">
+                    <p><b>{{ track.name }}</b></p>
+                    <p>{{ track.artists[0].name }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

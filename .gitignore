@@ -1,0 +1,9 @@
+# 가상 환경
+venv/
+__pycache__/
+
+# 환경변수
+.env
+
+# 운영체제 파일
+.DS_Store

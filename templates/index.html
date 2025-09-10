@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Mindmap Store</title>
+</head>
+<body>
+    <h1>추천곡 탐색 시스템</h1>
+    
+    {% if session['token_info'] %}
+        <p>찾고 싶은 노래를 검색해 보세요.</p>
+        <form action="/search" method="GET">
+            <input type="text" name="query" placeholder="노래 제목 입력">
+            <button type="submit">검색</button>
+        </form>
+        <br>
+        <a href="/my-cds">내 CD 컬렉션</a>
+        <a href="/logout">로그아웃</a>
+
+    {% else %}
+        <p>음악 여행을 시작하려면 로그인하세요.</p>
+        <a href="/login">Spotify로 로그인하기</a>
+    {% endif %}
+
+</body>
+</html>

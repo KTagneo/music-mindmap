@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내 CD 컬렉션</title>
+</head>
+<body>
+    <h1>💿 내 CD 컬렉션</h1>
+    <p>지금까지 제작한 나만의 믹스 CD 목록입니다.</p>
+    <a href="/">메인으로 돌아가기</a>
+    <hr>
+
+    {% if playlists %}
+        <ul>
+            {% for playlist in playlists %}
+                <li>
+                    <a href="{{ url_for('get_cd_details', playlist_id=playlist.id) }}">{{ playlist.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>아직 제작한 CD가 없습니다. 첫 CD를 만들어 보세요!</p>
+    {% endif %}
+
+</body>
+</html>

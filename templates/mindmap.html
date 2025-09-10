@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>음악 마인드맵</title>
+    <style>
+        body { text-align: center; font-family: sans-serif; }
+        .mindmap-container { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 50px; }
+        .center-node { margin: 20px; }
+        .center-node img { width: 250px; height: 250px; border-radius: 50%; border: 5px solid #1DB954; }
+        .recommendations-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; width: 600px; }
+        .rec-node { margin: 15px; }
+        .rec-node img { width: 120px; height: 120px; border-radius: 50%; }
+        a { text-decoration: none; color: black; }
+        .album-cover { cursor: pointer; }
+
+        /* --- 팝업 플레이어 스타일 추가 --- */
+        #player-popup {
+            display: none; /* 처음에는 숨겨둠 */
+            position: fixed; /* 화면에 고정 */
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* 반투명 검은 배경 */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* 다른 요소들보다 위에 표시 */
+        }
+        #player-container {
+            position: relative;
+            padding: 20px;
+            background-color: black;
+            border-radius: 10px;
+        }
+        #close-popup {
+            position: absolute;
+            top: -15px; right: -15px;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            border: none;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="/"><h1>Music Mindmap Store</h1></a>
+
+    <div class="center-node">
+        <div class="album-cover" data-track-name="{{ center_track.name }}" data-artist-name="{{ center_track.artists[0].name }}"> 
+            <img src="{{ center_track.album.images[0].url }}" alt="{{ center_track.name }}">
+        </div>
+        <h2>{{ center_track.name }}</h2>
+        <p>{{ center_track.artists[0].name }}</p>
+    </div>
+
+    <form action="/select-tracks" method="GET" style="margin: 20px 0;">
+        <button type="submit">💿 나만의 CD 만들러 가기</button>
+    </form>
+
+    <hr>
+    <h3>이런 노래는 어떠세요?</h3>
+
+    <div class="recommendations-container">
+        {% for rec in recommendations %}
+            <div class="rec-node">
+                <div class="album-cover" data-track-name="{{ rec.name }}" data-artist-name="{{ rec.artists[0].name }}" data-href="/recommendations/{{ rec.id }}">
+                    {% if rec.album.images %}
+                        <img src="{{ rec.album.images[0].url }}" alt="{{ rec.name }}">
+                    {% else %}
+                        <div style="width:120px; height:120px; background-color:#ccc; border-radius:50%; display:flex; align-items:center; justify-content:center;">?</div>
+                    {% endif %}
+                    <p><b>{{ rec.name }}</b></p>
+                    <p>{{ rec.artists[0].name }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="player-popup">
+        <div id="player-container">
+            <button id="close-popup">X</button>
+            <div id="player"></div> </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const playerPopup = document.getElementById('player-popup');
+        const closeButton = document.getElementById('close-popup');
+        const albumCovers = document.querySelectorAll('.album-cover');
+        let player;
+
+        // 유튜브 플레이어 API가 준비되면 이 함수를 자동으로 호출함
+        function onYouTubeIframeAPIReady() {
+            // 플레이어 객체는 나중에 클릭 시 생성
+        }
+        
+        // 닫기 버튼 클릭 시 팝업 닫고 영상 정지
+        closeButton.addEventListener('click', () => {
+            playerPopup.style.display = 'none';
+            if (player) {
+                player.stopVideo();
+            }
+        });
+
+        albumCovers.forEach(cover => {
+            cover.addEventListener('click', (event) => {
+                const trackName = cover.dataset.trackName;
+                const artistName = cover.dataset.artistName;
+                const href = cover.dataset.href;
+
+                // Shift 키를 누르고 클릭하면 페이지 이동, 그냥 클릭하면 미리듣기
+                if (event.shiftKey && href) {
+                    window.location.href = href;
+                    return;
+                }
+
+                // 1. 우리 서버에 비디오 ID를 요청
+                fetch(`/api/get-video-id?track=${encodeURIComponent(trackName)}&artist=${encodeURIComponent(artistName)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.video_id) {
+                            playerPopup.style.display = 'flex'; // 팝업창 보이기
+                            
+                            // 2. 받아온 비디오 ID로 유튜브 플레이어 생성
+                            if (player) {
+                                player.loadVideoById(data.video_id);
+                            } else {
+                                player = new YT.Player('player', {
+                                    height: '360',
+                                    width: '640',
+                                    videoId: data.video_id,
+                                    events: { 'onReady': (e) => e.target.playVideo() }
+                                });
+                            }
+                        } else {
+                            alert('미리듣기를 위한 동영상을 찾을 수 없습니다.');
+                        }
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

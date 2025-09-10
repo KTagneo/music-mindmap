@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>수록곡 선택</title>
+    <style>
+        .track-list { display: flex; flex-wrap: wrap; gap: 20px; }
+        .track-item { text-align: center; width: 150px; }
+        .track-item img { width: 120px; height: 120px; border-radius: 10px; }
+        .track-item label { cursor: pointer; } /* 라벨을 클릭 가능하게 */
+    </style>
+</head>
+<body>
+    <h1>💿 나만의 CD 만들기</h1>
+    <p>플레이리스트에 담고 싶은 곡들을 모두 선택하세요.</p>
+    <a href="/">메인으로 돌아가기</a>
+    <hr>
+
+    <form action="/create-cd" method="POST">
+        <div>
+            <input type="text" name="playlist_name" placeholder="CD 제목을 입력하세요" required size="30">
+        </div>
+        <hr>
+        <div class="track-list">
+            {% for track in tracks %}
+                <div class="track-item">
+                    <label>
+                        <input type="checkbox" name="track_ids" value="{{ track.id }}">
+                        <img src="{{ track.album.images[0].url }}" alt="{{ track.name }}">
+                        <p><b>{{ track.name }}</b></p>
+                        <p>{{ track.artists[0].name }}</p>
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        <hr>
+        <button type="submit" style="padding: 10px 20px; font-size: 16px;">선택한 곡으로 CD 굽기</button>
+    </form>
+
+</body>
+</html>

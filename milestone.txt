@@ -1,0 +1,21 @@
+<MVP>
+
+1. 곡 검색과 출력
+백: spotify에서 json데이터 받기
+프론트: 검색결과 html 템플릿 만들기
+>>둘 연동, for으로 각 노래 앨범커버, 제목, 아티스트 표시(clickable link)
+
+2. 마인드맵 1단계
+백: 맵 표시 경로 생성, 추천API로 추천곡 json 데이터 불러오기
+프론트: 마인드맵 html 템플릿 만들기, CSS로 간단한 디자인 구현(clickable link)
+
+3. 연쇄 마인드맵 생성, 마인드맵 탐색 종료 후(버튼?) 플레이리스트에 추가(새 화면?팝업?, 플리 이름 저장까지)
+
+
+<POST MVP>
+원형전개, 프랙탈 줌인아웃, 미니맵, 홈&search result 화면 등 디자인 요소
+
+
+로그인 시 cd탭 보이게 > burnt_CDs.html href
+cd탭 들어가면 만들었던 플리 링크들이 뜸 > burnt_CDs.html에 {{playlist_name}}존재, '/cd'라우트함수랑 render_template으로 세션 정보를 변수 할당, for문으로 나열
+플리 링크 들어가면 곡 목록이 뜸 > seen_track을 playlist_name과 세션에 저장하는 로직 구현, method 'GET'으로 /cd/<playlist_name>보내기, 

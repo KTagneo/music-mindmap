@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ playlist.name }}</title>
+    <style>
+        .track-list { display: flex; flex-wrap: wrap; gap: 20px; }
+        .track-item { text-align: center; width: 150px; }
+        .track-item img { width: 150px; height: 150px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>💿 {{ playlist.name }}</h1>
+    <a href="{{ url_for('my_cds') }}">내 CD 컬렉션으로 돌아가기</a>
+    <hr>
+
+    <div class="track-list">
+        {% for track in tracks %}
+            <div class="track-item">
+                <img src="{{ track.album.images[0].url }}" alt="{{ track.name }}">
+                <p><b>{{ track.name }}</b></p>
+                <p>{{ track.artists[0].name }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
